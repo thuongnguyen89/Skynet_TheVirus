@@ -40,6 +40,19 @@ class Player {
     	gateways.add(EI);
     }
     
+    /**
+     * Cut a link
+     * @param from
+     * @param to
+     */
+    public void cut(int from, int to){
+		// Cut SI and first linksSI
+		System.err.println("Cut " +  from + " " + to);
+		links.get(from).remove(to);
+		links.get(to).remove(from);
+		System.out.println(from + " " + to);    	
+    }
+    
     public void solve(final int SI){
 		System.err.println("Begin Solve");
         Set<Integer> parents = new HashSet<>();
@@ -66,9 +79,7 @@ class Player {
 	    		ArrayList<Integer> linksSI = links.get(SI);
 	    		linksSI.retainAll(parents);
 	    		System.err.println("Solve " + linksSI);
-	    		// Cut SI and first linksSI
-	    		System.err.println("Cut " +  SI + " " + linksSI.get(0));
-	    		System.out.println(SI + " " + linksSI.get(0));
+	    		cut(SI, linksSI.get(0));
 	    		System.err.println("End Solve");
 	    		return;
 	    	}
@@ -77,7 +88,14 @@ class Player {
         // If Skynet Agent is still far away from exit gateway 
         // Then cut node before SI arrive
         if(distance < 3){
-        	//gateways[]
+        	Iterator<Integer> g = gateways.iterator();
+        	while(g.hasNext()){
+        		int gate = g.next();
+        		ArrayList<Integer> l = links.get(gate);
+        		if(l.size() > 0){
+        			cut(gate, l.get(0));
+        		}
+        	}
         }
     }
     
